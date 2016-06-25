@@ -94,7 +94,7 @@ public class SystemPermission implements Serializable {
 		this.url = url;
 	}
 
-	@ManyToMany
+	@ManyToMany(mappedBy="permissions")
 	public Set<SystemRole> getRoles() {
 		return roles;
 	}

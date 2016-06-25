@@ -60,7 +60,7 @@ public class SystemUser extends Base {
 	 */
 	private boolean isEnabled;
 
-	@Column(name = "FirstName", columnDefinition = "varchar(36)")
+	@Column(name = "FirstName", columnDefinition = "VARCHAR(36)")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -69,7 +69,7 @@ public class SystemUser extends Base {
 		this.firstName = firstName;
 	}
 
-	@Column(name = "LastName", columnDefinition = "varchar(36)")
+	@Column(name = "LastName", columnDefinition = "VARCHAR(36)")
 	public String getLastName() {
 		return lastName;
 	}
@@ -78,7 +78,7 @@ public class SystemUser extends Base {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "UserName", columnDefinition = "varchar(36)")
+	@Column(name = "UserName", columnDefinition = "VARCHAR(36)")
 	public String getUsername() {
 		return username;
 	}
@@ -87,7 +87,7 @@ public class SystemUser extends Base {
 		this.username = username;
 	}
 
-	@Column(name = "Password", columnDefinition = "varchar(36)")
+	@Column(name = "Password", columnDefinition = "VARCHAR(36)")
 	public String getPassword() {
 		return password;
 	}
@@ -96,7 +96,7 @@ public class SystemUser extends Base {
 		this.password = password;
 	}
 
-	@Column(name = "Email", columnDefinition = "varchar(36)")
+	@Column(name = "Email", columnDefinition = "VARCHAR(36)")
 	public String getEmail() {
 		return email;
 	}
@@ -105,7 +105,7 @@ public class SystemUser extends Base {
 		this.email = email;
 	}
 
-	@Column(name = "isEnabled", columnDefinition = "boolean")
+	@Column(name = "isEnabled", columnDefinition = "BOOLEAN")
 	public boolean isEnabled() {
 		return isEnabled;
 	}
@@ -115,8 +115,8 @@ public class SystemUser extends Base {
 	}
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "SYSTEM_USER_ROLE", joinColumns = { @JoinColumn(name = "systemUserID") }, inverseJoinColumns = {
-			@JoinColumn(name = "systemRoleID") })
+	@JoinTable(name = "SYSTEM_USER_ROLE", joinColumns = { @JoinColumn(name = "SYSTEM_USER_ID") },
+	inverseJoinColumns = {@JoinColumn(name = "ROLE_ID") })
 	public Set<SystemRole> getRoles() {
 		return roles;
 	}
