@@ -18,6 +18,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,14 +28,20 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * @author 340819
  *
  */
+@Controller
+@RequestMapping("/auth")
 public class LoginController {
-	
 	
 	private static final Logger logger=Logger.getLogger(LoginController.class);
 	
-	private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "/";  
+	private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "/"; 
 	
-	@RequestMapping(value="/login", method=RequestMethod.POST)
+	@RequestMapping("/login")
+	public String login(){
+		return "Login";
+	}
+	
+	@RequestMapping(value="/doLogin", method=RequestMethod.POST)
 	public String login(@RequestParam String username,String password,HttpServletRequest request){
 		//获取HttpSession中的验证码  
         String verifyCode = (String)request.getSession().getAttribute("verifyCode");  
