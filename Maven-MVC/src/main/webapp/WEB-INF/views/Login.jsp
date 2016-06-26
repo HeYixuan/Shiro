@@ -20,7 +20,7 @@
 			</div>
 			<div class="login-content ">
 			<div class="form">
-			<form action="#" method="post">
+			<form action="${ctx}/auth/doLogin" method="post">
 				<div class="form-group">
 					<div class="col-xs-12  ">
 						<div class="input-group">
@@ -34,6 +34,14 @@
 						<div class="input-group">
 							<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
 							<input type="text" id="password" name="password" class="form-control" maxlength="20" placeholder="密码" />
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-12  ">
+						<div class="input-group">
+							<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+							<input type="text" id="verifyCode" name="verifyCode" class="form-control" maxlength="4" placeholder="验证码" />
 						</div>
 					</div>
 				</div>

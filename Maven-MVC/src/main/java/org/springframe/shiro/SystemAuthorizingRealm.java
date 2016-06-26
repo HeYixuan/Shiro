@@ -1,5 +1,9 @@
 package org.springframe.shiro;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
@@ -15,6 +19,8 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.springframe.model.system.SystemPermission;
+import org.springframe.model.system.SystemRole;
 import org.springframe.model.system.SystemUser;
 import org.springframe.service.system.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,22 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+		String username = (String) principals.fromRealm(getName()).iterator().next();
+		SystemUser systemUser = systemUserService.loadByUsername(username);
+		if (systemUser != null) {
+			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+			info.setRoles(systemUser.getRoleName());
+			//用户的角色对应的所有权限，如果只使用角色定义访问权限
+            Collection<SystemRole> roles = systemUser.getRoles();
+            
+            for (SystemRole role : roles) {
+            	Collection<SystemPermission> systemPermission = role.getPermissions();
+            	for (SystemPermission permissions : systemPermission) {
+            		info.addStringPermission(permissions.getPermisionName());
+				}
+			}
+            return info;
+		}
 		
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.addStringPermission("sys:manager");
