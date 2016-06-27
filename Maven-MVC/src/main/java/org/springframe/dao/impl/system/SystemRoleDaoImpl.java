@@ -13,7 +13,6 @@ public class SystemRoleDaoImpl implements SystemRoleDao {
 	@Autowired
 	private BaseDao<SystemRole>  baseDao;
 
-	@Override
 	public Serializable save(SystemRole role) {
 		return baseDao.save(role);
 	}

@@ -13,7 +13,6 @@ public class SystemUserServiceImpl implements SystemRoleService {
 	@Autowired
 	private SystemRoleDao systemRoleDao;
 
-	@Override
 	public Serializable save(SystemRole role) {
 		return systemRoleDao.save(role);
 	}

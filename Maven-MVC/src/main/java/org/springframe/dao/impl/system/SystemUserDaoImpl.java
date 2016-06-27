@@ -18,7 +18,6 @@ public class SystemUserDaoImpl implements SystemUserDao {
 		return baseDao.get(hql, new Object[]{username});
 	}
 
-	@Override
 	public Serializable save(SystemUser systemUser) {
 		return baseDao.save(systemUser);
 	}

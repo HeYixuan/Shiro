@@ -16,7 +16,6 @@ public class SystemRoleServiceImpl implements org.springframe.service.system.Sys
 		return systemUserDao.loadByUsername(username);
 	}
 
-	@Override
 	public Serializable save(SystemUser systemUser) {
 		return systemUserDao.save(systemUser);
 	}

@@ -9,10 +9,14 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -39,14 +43,45 @@ public class SystemPermission implements Serializable {
 	 * 权限名称
 	 */
 	private String permisionName;
-
+	
+	/**
+	 * 排序
+	 */
+	private Integer sort;
+	
+	/**
+	 * 描述
+	 */
+	private String description;
+	
+	/**
+	 * 资源类型
+	 * 0菜单
+	 * 1按钮
+	 */
+	private Integer resourceType;
+	
+	/**
+	 * 状态 
+	 * 0启用
+	 * 1停用
+	 */
+	private Integer status;
+	
+	/**
+	 * 父级
+	 */
+	private SystemPermission permission;
+	
+	private Set<SystemPermission> permissions = new HashSet<SystemPermission>();
+	
 	/**
 	 * 一个角色对应多个权限,反之一个权限对应多个角色
 	 */
 	private Set<SystemRole> roles = new HashSet<SystemRole>();
 
 	/**
-	 * URL地址
+	 * 菜单路径
 	 */
 	private String url;
 
@@ -101,6 +136,63 @@ public class SystemPermission implements Serializable {
 
 	public void setRoles(Set<SystemRole> roles) {
 		this.roles = roles;
+	}
+
+	
+	@Column(name = "SORTED", columnDefinition = "int(1)")
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	
+	@Column(name = "DESCRIPTION", columnDefinition = "int(1)")
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Column(name = "RESOURCETYPE", columnDefinition = "int(1)")
+	public Integer getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(Integer resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	@Column(name = "STATUS", columnDefinition = "int(1)")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PID")
+	public SystemPermission getPermission() {
+		return permission;
+	}
+
+	
+	public void setPermission(SystemPermission permission) {
+		this.permission = permission;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+	public Set<SystemPermission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Set<SystemPermission> permissions) {
+		this.permissions = permissions;
 	}
 
 	/******************************* 构造方法 ************************************/

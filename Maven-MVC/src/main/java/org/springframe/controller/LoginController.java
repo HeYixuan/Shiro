@@ -141,6 +141,7 @@ public class LoginController {
 		//清除session中的验证码
 		HttpSession session = (HttpSession) request.getSession();
 		session.removeAttribute("imageCode");
+		SecurityUtils.getSubject().logout();
 		return "redirect:login.html";
 	}
 }
