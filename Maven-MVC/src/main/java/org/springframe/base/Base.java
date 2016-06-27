@@ -63,7 +63,7 @@ public class Base implements Serializable{
 		this.id = id;
 	}
 
-    @Column(name = "CreateTime",columnDefinition="DATETIME")
+    @Column(name = "CREATE_TIME",columnDefinition="DATETIME")
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -72,7 +72,7 @@ public class Base implements Serializable{
 		this.createTime = createTime;
 	}
 	
-	@Column(name = "UpdateTime",columnDefinition="DATETIME")
+	@Column(name = "UPDATE_TIME",columnDefinition="DATETIME")
 	public Date getUpdateTime() {
 		return updateTime;
 	}
