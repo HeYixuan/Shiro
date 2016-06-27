@@ -37,38 +37,18 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  *
  */
 @Controller
-@RequestMapping("/auth")
+//@RequestMapping("/auth")
 public class LoginController {
 
 	private static final Logger logger = Logger.getLogger(LoginController.class);
 
-	private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "/";
+	private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "login.html";
 
-	@RequestMapping("/login")
+	@RequestMapping(value="/login.html",method=RequestMethod.GET)
 	public String login() {
 		return "Login";
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-
-	public String randomOne() throws Exception {
-		/*
-		 * ServletActionContext.getRequest().getHeader(
-		 * "Content-type: image/png; charset=UTF-8");
-		 * ServletActionContext.getRequest().setCharacterEncoding("UTF-8");
-		 * ServletActionContext.getResponse().setCharacterEncoding("UTF-8");
-		 */
-
-		//VerificationCodeUtil rdm = VerificationCodeUtil.Instance();
-		// this.setInputStream(rdm.getImage());/// 取得带有随机字符串的图片
-		// ActionContext.getContext().getSession().put("rdmImg",
-		// rdm.getStr());// 取得随机字符串放入HttpSession
-		return null;
-	}
-	
 	@RequestMapping("/test")
 	public String test(){
 		return "/test/test";
@@ -81,8 +61,8 @@ public class LoginController {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	@RequestMapping("/random")
-	public void getKaptchaImage(HttpServletResponse response, HttpSession session) throws IOException {
+	@RequestMapping("/kaptcha")
+	public void kaptcha(HttpServletResponse response, HttpSession session) throws IOException {
 		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 		response.addHeader("Cache-Control", "post-check=0, pre-check=0");
 		response.setContentType("image/png");
@@ -91,6 +71,7 @@ public class LoginController {
 		Object[] objs = ImageUtils.createImage();
 		// 将验证码存入Session
 		session.setAttribute("imageCode", objs[0]);
+		System.err.println("验证码为:"+objs[0]);
 		// 将图片输出给浏览器
 		BufferedImage image = (BufferedImage) objs[1];
 		response.setContentType("image/png");
@@ -102,11 +83,11 @@ public class LoginController {
 	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
 	public String login(@RequestParam String username, String password, HttpServletRequest request) {
 		// 获取HttpSession中的验证码
-		String verifyCode = (String) request.getSession().getAttribute("verifyCode");
+		String imageCode = (String) request.getSession().getAttribute("imageCode");
 		// 获取用户请求表单中输入的验证码
-		String submitCode = WebUtils.getCleanParam(request, "verifyCode");
-		System.out.println("用户[" + username + "]登录时输入的验证码为[" + submitCode + "],HttpSession中的验证码为[" + verifyCode + "]");
-		if (StringUtils.isEmpty(submitCode) || !StringUtils.equalsIgnoreCase(verifyCode, submitCode)) {
+		String submitCode = WebUtils.getCleanParam(request, "imageCode");
+		System.out.println("用户[" + username + "]登录时输入的验证码为[" + submitCode + "],HttpSession中的验证码为[" + imageCode + "]");
+		if (StringUtils.isEmpty(submitCode) || !StringUtils.equalsIgnoreCase(imageCode, submitCode)) {
 			request.setAttribute("message_login", "验证码不正确");
 			return resultPageURL;
 		}
@@ -121,8 +102,15 @@ public class LoginController {
 			// 所以这一步在调用login(token)方法时,它会走到MyRealm.doGetAuthenticationInfo()方法中,具体验证方式详见此方法
 			logger.info("对用户[" + username + "]进行登录验证..验证开始");
 			currentUser.login(token);
-			logger.info("对用户[" + username + "]进行登录验证..验证通过");
-			resultPageURL = "main";
+			// 验证是否登录成功
+			if (currentUser.isAuthenticated()) {
+				logger.info("对用户[" + username + "]进行登录验证..验证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
+				resultPageURL = "/";
+				return resultPageURL;
+			} else {
+				token.clear();
+				return resultPageURL;
+			}
 		} catch (UnknownAccountException uae) {
 			logger.error("对用户[" + username + "]进行登录验证..验证未通过,未知账户");
 			request.setAttribute("message_login", "未知账户");
@@ -143,12 +131,16 @@ public class LoginController {
 			ae.printStackTrace();
 			request.setAttribute("message_login", "用户名或密码不正确");
 		}
-		// 验证是否登录成功
-		if (currentUser.isAuthenticated()) {
-			logger.info("对用户[" + username + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
-		} else {
-			token.clear();
-		}
-		return "/";
+		return resultPageURL;
+	}
+	
+	
+	@RequestMapping("/logout")
+	public String logout(HttpServletRequest request) {
+		logger.info("-------------注销---------------");
+		//清除session中的验证码
+		HttpSession session = (HttpSession) request.getSession();
+		session.removeAttribute("imageCode");
+		return "redirect:login.html";
 	}
 }

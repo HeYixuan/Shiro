@@ -10,6 +10,7 @@
 <title>Bootstrap响应式登录界面模板</title>
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="${ctx}/resources/css/login.min.css" />
+<script src="${ctx}/resources/js/jquery-3.0.0.min.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
 			</div>
 			<div class="login-content ">
 			<div class="form">
-			<form action="${ctx}/auth/doLogin" method="post">
+			<form action="${ctx}/doLogin" method="post">
 				<div class="form-group">
 					<div class="col-xs-12  ">
 						<div class="input-group">
@@ -33,15 +34,16 @@
 					<div class="col-xs-12  ">
 						<div class="input-group">
 							<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-							<input type="text" id="password" name="password" class="form-control" maxlength="20" placeholder="密码" />
+							<input type="password" id="password" name="password" class="form-control" maxlength="20" placeholder="密码" />
 						</div>
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-xs-12  ">
+					<div class="col-xs-4  ">
 						<div class="input-group">
-							<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-							<input type="text" id="verifyCode" name="verifyCode" class="form-control" maxlength="4" placeholder="验证码" />
+							<!-- <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span> -->
+							<input type="text" id="imageCode" name="imageCode" class="form-control" maxlength="4" placeholder="验证码" />
+							<img style="height: 35px; width: 100px;" id="code_img" src="${ctx}/kaptcha" title="点击刷新图片" />
 						</div>
 					</div>
 				</div>
@@ -65,6 +67,21 @@
 		</div>
 	</div>
 </div>
-</body>
 
+<script type="text/javascript">
+$(function(){
+	$("#code_img").click(function(){
+		flash(this);
+	});
+});
+
+	function flash(obj) {
+		//获取当前的时间作为参数，无具体意义
+		var NowTime = new Date().getTime();
+		//每次请求需要一个不同的参数，否则可能会返回同样的验证码
+		//这和浏览器的缓存机制有关系，也可以把页面设置为不缓存，这样就不用这个参数了。
+		obj.src="kaptcha.action?date"+NowTime;
+	}
+</script>
+</body>
 </html>

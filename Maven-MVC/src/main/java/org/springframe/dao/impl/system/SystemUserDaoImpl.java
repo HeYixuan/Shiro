@@ -1,5 +1,7 @@
 package org.springframe.dao.impl.system;
 
+import java.io.Serializable;
+
 import org.springframe.base.BaseDao;
 import org.springframe.dao.system.SystemUserDao;
 import org.springframe.model.system.SystemUser;
@@ -14,6 +16,11 @@ public class SystemUserDaoImpl implements SystemUserDao {
 	public SystemUser loadByUsername(String username) {
 		String hql = "From SystemUser where username=?";
 		return baseDao.get(hql, new Object[]{username});
+	}
+
+	@Override
+	public Serializable save(SystemUser systemUser) {
+		return baseDao.save(systemUser);
 	}
 
 }

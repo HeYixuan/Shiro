@@ -12,7 +12,7 @@
 <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 </head>
 <body>
-<img style="height: 35px; width: 100px;" id="code_img" src="${ctx}/auth/random" title="点击刷新图片" />
+<img style="height: 35px; width: 100px;" id="code_img" src="${ctx}/kaptcha" title="点击刷新图片" />
 </body>
 <script type="text/javascript">
 $(function(){
@@ -26,7 +26,7 @@ $(function(){
 		var NowTime = new Date().getTime();
 		//每次请求需要一个不同的参数，否则可能会返回同样的验证码
 		//这和浏览器的缓存机制有关系，也可以把页面设置为不缓存，这样就不用这个参数了。
-		obj.src="random.action?date"+NowTime;
+		obj.src="kaptcha.action?date"+NowTime;
 	}
 </script>
 </html>

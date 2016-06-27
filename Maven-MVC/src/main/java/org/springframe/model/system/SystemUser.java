@@ -106,7 +106,7 @@ public class SystemUser extends Base {
 		this.email = email;
 	}
 
-	@Column(name = "ISENABLED", columnDefinition = "BOOLEAN")
+	@Column(name = "ENABLED", columnDefinition = "BOOLEAN")
 	public boolean isEnabled() {
 		return isEnabled;
 	}

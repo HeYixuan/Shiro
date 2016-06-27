@@ -1,5 +1,7 @@
 package org.springframe.service.system;
 
+import java.io.Serializable;
+
 import org.springframe.model.system.SystemUser;
 
 public interface SystemUserService {
@@ -9,4 +11,11 @@ public interface SystemUserService {
 	 * @return
 	 */
 	public SystemUser loadByUsername(String username);
+	
+	/**
+	 * 新增
+	 * @param systemUser
+	 * @return
+	 */
+	public Serializable save(SystemUser systemUser);
 }

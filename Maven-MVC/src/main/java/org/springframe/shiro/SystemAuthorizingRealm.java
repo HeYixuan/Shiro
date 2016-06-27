@@ -29,7 +29,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	
 	private static final Logger logger = Logger.getLogger(SystemAuthorizingRealm.class);
 
-	@Autowired /* businessManager */
+	@Autowired
 	private SystemUserService systemUserService;
 
 	@Override
@@ -41,12 +41,8 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			info.setRoles(systemUser.getRoleName());
 			//用户的角色对应的所有权限，如果只使用角色定义访问权限
             Collection<SystemRole> roles = systemUser.getRoles();
-            
             for (SystemRole role : roles) {
-            	Collection<SystemPermission> systemPermission = role.getPermissions();
-            	for (SystemPermission permissions : systemPermission) {
-            		info.addStringPermission(permissions.getPermisionName());
-				}
+            	info.setStringPermissions(role.getPermissionsName());
 			}
             return info;
 		}
@@ -113,7 +109,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
             Session session = currentUser.getSession();
             logger.info("Session默认超时时间为[" + session.getTimeout() + "]毫秒");
             if(null != session){  
-                session.setAttribute(key, value);  
+                session.setAttribute(key, value);
             }  
         }  
     } 
