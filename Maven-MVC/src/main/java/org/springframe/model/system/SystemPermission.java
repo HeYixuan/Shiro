@@ -175,7 +175,7 @@ public class SystemPermission implements Serializable {
 		this.status = status;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "PID")
 	public SystemPermission getPermission() {
 		return permission;
@@ -186,7 +186,7 @@ public class SystemPermission implements Serializable {
 		this.permission = permission;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "permissions")
 	public Set<SystemPermission> getPermissions() {
 		return permissions;
 	}
