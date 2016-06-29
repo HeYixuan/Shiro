@@ -96,3 +96,29 @@ CREATE TABLE `system_user_role` (
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+SELECT * FROM SYSTEM_USER;
+
+ SELECT   
+      systemUser.`ID` AS SystemUserID,
+      systemUser.`USER_NAME` AS UserName,
+      systemUser.`PASSWORD` AS PASSWORD,
+      role.`ID` AS ROLE_ID,
+      role.`ROLE_NAME` AS ROLE_NAME,
+      p.`ID` AS PERMISSION_ID,
+      p.`PERMISSION_NAME` AS PERMISSION_NAME  
+    FROM  
+      SYSTEM_USER AS systemUser,  
+      SYSTEM_ROLE AS role,  
+      SYSTEM_PERMISSION AS p,
+      SYSTEM_ROLE_PERMISSION AS pr,  
+      SYSTEM_USER_ROLE AS ur
+    WHERE  
+      systemUser.`ID` = ur.`SYSTEM_USER_ID` 
+    AND  
+      role.`ID` = ur.`SYSTEM_ROLE_ID`
+    AND  
+      p.`ID` = pr.`PERMISSION_ID`  
+    AND  
+      role.`ID` = pr.`SYSTEM_ROLE_ID`
