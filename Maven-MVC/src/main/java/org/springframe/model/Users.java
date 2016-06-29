@@ -19,14 +19,14 @@ public class Users extends Base {
 	
 	private Long sid;
 	
-	@Id
+	/*@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getSid() {
 		return sid;
 	}
 	public void setSid(Long sid) {
 		this.sid = sid;
-	}
+	}*/
 
 	private String firstName;
 
@@ -46,7 +46,7 @@ public class Users extends Base {
 	/**
 	 * 是否激活
 	 */
-	private boolean isEnabled;
+	private int isEnabled;
 	
 	@Column(name = "FirstName", columnDefinition = "varchar(36)")
 	public String getFirstName() {
@@ -85,11 +85,11 @@ public class Users extends Base {
 		this.email = email;
 	}
 	
-	@Column(name = "isEnabled", columnDefinition = "boolean")
-	public boolean isEnabled() {
+	@Column(name = "isEnabled", columnDefinition = "int(1)")
+	public int isEnabled() {
 		return isEnabled;
 	}
-	public void setEnabled(boolean isEnabled) {
+	public void setEnabled(int isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 	
@@ -98,7 +98,7 @@ public class Users extends Base {
 		super();
 	}
 	
-	public Users(String id, String username, String password, String email, boolean isEnabled) {
+	public Users(String id, String username, String password, String email, int isEnabled) {
 		super(id);
 		this.username = username;
 		this.password = password;

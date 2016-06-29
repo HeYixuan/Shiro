@@ -20,8 +20,8 @@ public class TestContrller {
 		systemUser.setUsername("HYX15517551511");
 		systemUser.setPassword("********");
 		systemUser.setEmail("15517551511@126.com");
-		systemUser.setEnabled(true);
+		systemUser.setEnabled(1);
 		systemUserService.save(systemUser);
-		return "redirect:login.html";
+		return "redirect:/login.html";
 	}
 }

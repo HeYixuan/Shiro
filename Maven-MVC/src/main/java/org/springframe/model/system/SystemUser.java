@@ -50,16 +50,19 @@ public class SystemUser extends Base {
 	 * 电子邮箱
 	 */
 	private String email;
+	
+	/**
+	 * 是否启用
+	 * 启用0
+	 * 停用1
+	 */
+	private int enabled;
 
 	/**
 	 * 一个用户对应多个角色
 	 */
 	private Set<SystemRole> roles = new HashSet<SystemRole>();
 
-	/**
-	 * 是否启用 启用为true
-	 */
-	private boolean isEnabled;
 
 	@Column(name = "FIRST_NAME", columnDefinition = "VARCHAR(36)")
 	public String getFirstName() {
@@ -106,13 +109,13 @@ public class SystemUser extends Base {
 		this.email = email;
 	}
 
-	@Column(name = "ENABLED", columnDefinition = "BOOLEAN")
-	public boolean isEnabled() {
-		return isEnabled;
+	@Column(name = "ENABLED", columnDefinition = "int(1)")
+	public int getEnabled() {
+		return enabled;
 	}
 
-	public void setEnabled(boolean isEnabled) {
-		this.isEnabled = isEnabled;
+	public void setEnabled(int enabled) {
+		this.enabled = enabled;
 	}
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -142,14 +145,17 @@ public class SystemUser extends Base {
 	}
 
 	public SystemUser(String firstName, String lastName, String username, String password, String email,
-			boolean isEnabled) {
+			Set<SystemRole> roles, int enabled) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		this.isEnabled = isEnabled;
+		this.roles = roles;
+		this.enabled = enabled;
 	}
+	
+	
 
 }
