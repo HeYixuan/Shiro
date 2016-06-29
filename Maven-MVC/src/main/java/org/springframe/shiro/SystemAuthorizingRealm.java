@@ -1,8 +1,6 @@
 package org.springframe.shiro;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,7 +17,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
-import org.springframe.model.system.SystemPermission;
 import org.springframe.model.system.SystemRole;
 import org.springframe.model.system.SystemUser;
 import org.springframe.service.system.SystemUserService;
