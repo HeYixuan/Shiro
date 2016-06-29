@@ -23,8 +23,13 @@ DROP TABLE IF EXISTS `system_permission`;
 CREATE TABLE `system_permission` (
   `ID` varchar(36) COLLATE utf8_bin NOT NULL COMMENT '编号',
   `PERMISSION_NAME` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '权限名称',
+  `PID` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '父节点ID',
+  `TYPE` int(1) DEFAULT NULL COMMENT '资源类型 0菜单 1按钮',
+  `STATUS` int(1) DEFAULT NULL COMMENT '状态启用 0启用 1停用',
   `URL` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'URL地址',
   `ICON` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '图标',
+  `SORT` int(1) DEFAULT NULL COMMENT '排序',
+  `DESCRIPTION` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '描述',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -66,10 +71,8 @@ CREATE TABLE `system_user` (
   `USER_NAME` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '用户名',
   `PASSWORD` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '密码',
   `EMAIL` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '电子邮箱',
-  `ENABLED` tinyint(1) DEFAULT NULL COMMENT '是否启用',
-  `CREATE_USER` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '创建人',
-  `CREATE_TIME` date DEFAULT NULL COMMENT '创建时间',
-  `UPDATE_USER` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '修改人',
+  `ENABLED` int(1) DEFAULT NULL COMMENT '是否启用',
+  `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
   `UPDATE_TIME` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -88,32 +91,6 @@ CREATE TABLE `system_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `system_user_role` */
-
-
-SELECT * FROM SYSTEM_USER;
-
- SELECT   
-      systemUser.`ID` AS SystemUserID,
-      systemUser.`USER_NAME` AS UserName,
-      systemUser.`PASSWORD` AS PASSWORD,
-      role.`ID` AS ROLE_ID,
-      role.`ROLE_NAME` AS ROLE_NAME,
-      p.`ID` AS PERMISSION_ID,
-      p.`PERMISSION_NAME` AS PERMISSION_NAME  
-    FROM  
-      SYSTEM_USER AS systemUser,  
-      SYSTEM_ROLE AS role,  
-      SYSTEM_PERMISSION AS p,
-      SYSTEM_ROLE_PERMISSION AS pr,  
-      SYSTEM_USER_ROLE AS ur
-    WHERE  
-      systemUser.`ID` = ur.`SYSTEM_USER_ID` 
-    AND  
-      role.`ID` = ur.`SYSTEM_ROLE_ID`
-    AND  
-      p.`ID` = pr.`PERMISSION_ID`  
-    AND  
-      role.`ID` = pr.`SYSTEM_ROLE_ID`
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
