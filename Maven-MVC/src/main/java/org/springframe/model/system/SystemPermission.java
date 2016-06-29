@@ -45,15 +45,10 @@ public class SystemPermission implements Serializable {
 	private String permisionName;
 	
 	/**
-	 * 排序
+	 * 父节点ID
 	 */
-	private Integer sort;
-	
-	/**
-	 * 描述
-	 */
-	private String description;
-	
+	private String pid;
+		
 	/**
 	 * 资源类型
 	 * 0菜单
@@ -69,26 +64,30 @@ public class SystemPermission implements Serializable {
 	private Integer status;
 	
 	/**
-	 * 父级
+	 * 图标
 	 */
-	private SystemPermission permission;
+	private String icon;
 	
-	private Set<SystemPermission> permissions = new HashSet<SystemPermission>();
+	/**
+	 * 菜单路径
+	 */
+	private String url;
+	
+	/**
+	 * 排序
+	 */
+	private Integer sort;
+	
+	/**
+	 * 描述
+	 */
+	private String description;
 	
 	/**
 	 * 一个角色对应多个权限,反之一个权限对应多个角色
 	 */
 	private Set<SystemRole> roles = new HashSet<SystemRole>();
 
-	/**
-	 * 菜单路径
-	 */
-	private String url;
-
-	/**
-	 * 图标
-	 */
-	private String icon;
 
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "uuid")
@@ -110,6 +109,33 @@ public class SystemPermission implements Serializable {
 	public void setPermisionName(String permisionName) {
 		this.permisionName = permisionName;
 	}
+	
+	@Column(name = "PID", columnDefinition = "VARCHAR(36)")
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+	
+	@Column(name = "TYPE", columnDefinition = "int(1)")
+	public Integer getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(Integer resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	@Column(name = "STATUS", columnDefinition = "int(1)")
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 
 	@Column(name = "ICON", columnDefinition = "VARCHAR(500)")
 	public String getIcon() {
@@ -128,6 +154,24 @@ public class SystemPermission implements Serializable {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+	@Column(name = "SORT", columnDefinition = "int(1)")
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+	
+	@Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(36)")
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	@ManyToMany(mappedBy="permissions")
 	public Set<SystemRole> getRoles() {
@@ -138,62 +182,7 @@ public class SystemPermission implements Serializable {
 		this.roles = roles;
 	}
 
-	
-	@Column(name = "SORTED", columnDefinition = "int(1)")
-	public Integer getSort() {
-		return sort;
-	}
 
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-	
-	@Column(name = "DESCRIPTION", columnDefinition = "int(1)")
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	@Column(name = "RESOURCETYPE", columnDefinition = "int(1)")
-	public Integer getResourceType() {
-		return resourceType;
-	}
-
-	public void setResourceType(Integer resourceType) {
-		this.resourceType = resourceType;
-	}
-
-	@Column(name = "STATUS", columnDefinition = "int(1)")
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "PID")
-	public SystemPermission getPermission() {
-		return permission;
-	}
-
-	
-	public void setPermission(SystemPermission permission) {
-		this.permission = permission;
-	}
-
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "permissions")
-	public Set<SystemPermission> getPermissions() {
-		return permissions;
-	}
-
-	public void setPermissions(Set<SystemPermission> permissions) {
-		this.permissions = permissions;
-	}
 
 	/******************************* 构造方法 ************************************/
 
