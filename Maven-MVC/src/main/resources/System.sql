@@ -48,7 +48,9 @@ CREATE TABLE `system_permission` (
   `ICON` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '图标',
   `SORT` int(1) DEFAULT NULL COMMENT '排序',
   `DESCRIPTION` varchar(36) COLLATE utf8_bin DEFAULT NULL COMMENT '描述',
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY `FK_PID` (`PID`),
+  CONSTRAINT `FK_PID` FOREIGN KEY (`PID`) REFERENCES `system_permission` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Data for the table `system_permission` */
