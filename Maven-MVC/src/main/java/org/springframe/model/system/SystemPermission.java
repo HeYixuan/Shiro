@@ -7,15 +7,14 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -47,7 +46,7 @@ public class SystemPermission implements Serializable {
 	/**
 	 * 父节点ID
 	 */
-	private String pid;
+	private SystemPermission pid;
 		
 	/**
 	 * 资源类型
@@ -87,6 +86,11 @@ public class SystemPermission implements Serializable {
 	 * 一个角色对应多个权限,反之一个权限对应多个角色
 	 */
 	private Set<SystemRole> roles = new HashSet<SystemRole>();
+	
+	/**
+	 * 子节点
+	 */
+	private Set<SystemPermission> children = new HashSet<SystemPermission>();
 
 
 	@Id
@@ -111,11 +115,11 @@ public class SystemPermission implements Serializable {
 	}
 	
 	@Column(name = "PID", columnDefinition = "VARCHAR(36)")
-	public String getPid() {
+	public SystemPermission getPid() {
 		return pid;
 	}
 
-	public void setPid(String pid) {
+	public void setPid(SystemPermission pid) {
 		this.pid = pid;
 	}
 	
@@ -181,7 +185,15 @@ public class SystemPermission implements Serializable {
 	public void setRoles(Set<SystemRole> roles) {
 		this.roles = roles;
 	}
+	
+	@OneToMany(mappedBy="pid",cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	public Set<SystemPermission> getChildren() {
+		return children;
+	}
 
+	public void setChildren(Set<SystemPermission> children) {
+		this.children = children;
+	}
 
 
 	/******************************* 构造方法 ************************************/
@@ -189,16 +201,27 @@ public class SystemPermission implements Serializable {
 	public SystemPermission() {
 		super();
 	}
+	
+	
 
-	public SystemPermission(String id, String permisionName, Set<SystemRole> roles, String url, String icon) {
+	public SystemPermission(String id, String permisionName, SystemPermission pid, Integer resourceType, Integer status,
+			String icon, String url, Integer sort, String description, Set<SystemRole> roles,
+			Set<SystemPermission> children) {
 		super();
 		this.id = id;
 		this.permisionName = permisionName;
-		this.roles = roles;
-		this.url = url;
+		this.pid = pid;
+		this.resourceType = resourceType;
+		this.status = status;
 		this.icon = icon;
+		this.url = url;
+		this.sort = sort;
+		this.description = description;
+		this.roles = roles;
+		this.children = children;
 	}
 
+	
 	@Transient
 	public Set<String> getRoleName() {
 		Set<String> set = new HashSet<String>();
@@ -208,4 +231,5 @@ public class SystemPermission implements Serializable {
 		}
 		return set;
 	}
+	
 }
