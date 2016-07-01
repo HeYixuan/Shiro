@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class SystemUserDaoImpl implements SystemUserDao {
 	@Autowired
-	private BaseDao<SystemUser>  baseDao;
+	private BaseDao<SystemUser> baseDao;
 	
 	public SystemUser loadByUsername(String username) {
 		String hql = "From SystemUser where username=?";
