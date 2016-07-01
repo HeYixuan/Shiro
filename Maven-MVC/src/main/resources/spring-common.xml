@@ -51,8 +51,8 @@
 			<props>
 				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.dialect">${hibernate_dialect}</prop>
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.show_sql">${hibernate_showsql}</prop>
+				<prop key="hibernate.format_sql">${hibernate_formatsql}</prop>
 				<prop key="hibernate.use_sql_comments">true</prop>
 				<prop key="javax.persistence.validation.mode">none</prop>
 				<!-- 高速缓存提供程序 -->
