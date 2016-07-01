@@ -62,7 +62,7 @@
 		<!-- 注解方式配置自动扫描包下的实体，也可使用annotatedClasses属性进行单个实体配置 -->
 		<property name="packagesToScan">
 			<list>
-				<value>org.springframe.model</value>
+				<value>${hibernate_packagesToScan}</value>
 			</list>
 		</property>
 	</bean>
