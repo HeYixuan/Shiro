@@ -18,8 +18,11 @@
 
 		<property name="filterChainDefinitions">
 			<value>
+				<!-- anon 开放不拦截 -->
+				/kaptcha.jpg = anon
 				/resources/*=anon
 				/admin/**=authc
+				/logout = logout
 				<!-- roles[manager]表示访问此连接需要用户的角色为manager -->  
                 /user/add=roles[manager]  
                 /user/del/**=roles[admin]  
@@ -28,7 +31,10 @@
 		</property>
 
 	</bean>
-
+	
+	<!-- 自定义验证拦截器 -->  
+    <bean id="myAuthenFilter" class="org.springframe.shiro.CaptchaFormAuthenticationFilter" /> 
+    
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
 	<!-- 数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->

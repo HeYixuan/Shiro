@@ -76,7 +76,6 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-
 	<!-- Spring的Log4j监听器 -->
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
@@ -109,6 +108,21 @@
 		<error-code>404</error-code>
 		<location>/WEB-INF/views/error/404.jsp</location>
 	</error-page>
+
+
+	<!-- captcha 验证码 -->
+	<servlet>
+		<servlet-name>kaptcha</servlet-name>
+		<servlet-class>
+			<!-- com.google.code.kaptcha.servlet.KaptchaServlet  -->
+			org.springframe.shiro.CaptchaServlet
+			<!-- org.springframe.controller.LoginController -->
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>kaptcha</servlet-name> 
+		<url-pattern>/kaptcha</url-pattern>
+	</servlet-mapping>
 
 </web-app>
  

@@ -70,7 +70,7 @@ public class LoginController {
 		// 第一个参数是生成的验证码，第二个参数是生成的图片
 		Object[] objs = ImageUtils.createImage();
 		// 将验证码存入Session
-		session.setAttribute("imageCode", objs[0]);
+		session.setAttribute("captcha", objs[0]);
 		System.err.println("验证码为:"+objs[0]);
 		// 将图片输出给浏览器
 		BufferedImage image = (BufferedImage) objs[1];
@@ -83,9 +83,9 @@ public class LoginController {
 	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
 	public String login(@RequestParam String username, String password, HttpServletRequest request) {
 		// 获取HttpSession中的验证码
-		String imageCode = (String) request.getSession().getAttribute("imageCode");
+		String imageCode = (String) request.getSession().getAttribute("captcha");
 		// 获取用户请求表单中输入的验证码
-		String submitCode = WebUtils.getCleanParam(request, "imageCode");
+		String submitCode = WebUtils.getCleanParam(request, "captcha");
 		System.out.println("用户[" + username + "]登录时输入的验证码为[" + submitCode + "],HttpSession中的验证码为[" + imageCode + "]");
 		if (StringUtils.isEmpty(submitCode) || !StringUtils.equalsIgnoreCase(imageCode, submitCode)) {
 			request.setAttribute("message_login", "验证码不正确");

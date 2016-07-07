@@ -13,12 +13,10 @@ public class SystemUserServiceImpl implements SystemUserService {
 	@Autowired
 	private SystemUserDao systemUserDao;
 
-	@Override
 	public SystemUser loadByUsername(String username) {
 		return systemUserDao.loadByUsername(username);
 	}
 
-	@Override
 	public Serializable save(SystemUser systemUser) {
 		return systemUserDao.save(systemUser);
 	}
