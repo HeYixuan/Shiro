@@ -25,6 +25,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframe.constant.GlobalConstant;
 import org.springframe.utils.ImageUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,14 +64,17 @@ public class LoginController {
 	 */
 	@RequestMapping("/kaptcha")
 	public void kaptcha(HttpServletResponse response, HttpSession session) throws IOException {
+		// 禁止图像缓存
+		response.setHeader("Pragma", "No-cache");
 		response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 		response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+		response.setDateHeader("Expires", 0);
 		response.setContentType("image/png");
 		// 利用图片工具生成图片
 		// 第一个参数是生成的验证码，第二个参数是生成的图片
 		Object[] objs = ImageUtils.createImage();
 		// 将验证码存入Session
-		session.setAttribute("captcha", objs[0]);
+		session.setAttribute(GlobalConstant.KEY_CAPTCHA, objs[0]);
 		System.err.println("验证码为:"+objs[0]);
 		// 将图片输出给浏览器
 		BufferedImage image = (BufferedImage) objs[1];
