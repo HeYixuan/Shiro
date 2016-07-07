@@ -105,7 +105,7 @@ public class SystemPermission implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "PERMISION_NAME", columnDefinition = "VARCHAR(36)")
+	@Column(name = "PERMISSION_NAME", columnDefinition = "VARCHAR(36)")
 	public String getPermisionName() {
 		return permisionName;
 	}

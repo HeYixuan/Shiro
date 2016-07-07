@@ -101,12 +101,16 @@ public class SystemRole implements Serializable {
 		super();
 	}
 
-	public SystemRole(String id, String roleName) {
+
+	
+	public SystemRole(String id, String roleName, Set<SystemUser> systemUsers, Set<SystemPermission> permissions) {
 		super();
 		this.id = id;
 		this.roleName = roleName;
+		this.systemUsers = systemUsers;
+		this.permissions = permissions;
 	}
-	
+
 	@Transient
 	public Set<String> getPermissionsName() {
 		Set<String> set = new HashSet<String>();
