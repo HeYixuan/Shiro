@@ -12,16 +12,22 @@
 		<!-- 要求登录时的链接(登录页面地址)，非必须的属性，默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
 		<property name="loginUrl" value="/login.html" />
 		<!-- 登录成功后要跳转的连接(本例中此属性用不到，因为登录成功后的处理逻辑在LoginController里硬编码) -->
-		<!-- <property name="successUrl" value="/" ></property> -->
+		<property name="successUrl" value="/" />
 		<!-- 用户访问未对其授权的资源时，所显示的连接 -->
-		<property name="unauthorizedUrl" value="/error/unauthorized" />
-
+		<property name="unauthorizedUrl" value="/403" />
+		<property name="filters">
+		    <map>
+		        <entry key="authc" value-ref="myAuthenFilter"/>
+		    </map>
+		</property>
 		<property name="filterChainDefinitions">
 			<value>
 				<!-- anon 开放不拦截 -->
-				/kaptcha.jpg = anon
+				/kaptcha = anon
 				/resources/*=anon
 				/admin/**=authc
+				<!-- 输入/ 需要鉴权 -->
+				/ = user
 				/logout = logout
 				<!-- roles[manager]表示访问此连接需要用户的角色为manager -->  
                 /user/add=roles[manager]  
@@ -38,7 +44,7 @@
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
 	<!-- 数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
-	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.Md5CredentialsMatcher"></bean>
+	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.Sha512CredentialsMatcher"></bean>
 	<!-- 缓存管理 -->
 	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
 	
@@ -60,7 +66,16 @@
 		<property name="realm" ref="realm"></property>
 		<property name="cacheManager" ref="cacheManager"></property>
 	</bean>
-
+	
 	<!-- Shiro的注解配置一定要放在spring-mvc中 -->
+		<!-- 开启shiro注解-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true" />
+    </bean>
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
 
 </beans>

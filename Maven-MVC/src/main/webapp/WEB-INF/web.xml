@@ -111,18 +111,22 @@
 
 
 	<!-- captcha 验证码 -->
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>kaptcha</servlet-name>
 		<servlet-class>
-			<!-- com.google.code.kaptcha.servlet.KaptchaServlet  -->
+			com.google.code.kaptcha.servlet.KaptchaServlet 
 			org.springframe.shiro.CaptchaServlet
-			<!-- org.springframe.controller.LoginController -->
+			org.springframe.controller.LoginController
 		</servlet-class>
+		<init-param>    
+            <param-name>kaptcha.textproducer.font.color</param-name>    
+            <param-value>105,179,90</param-value>    
+        </init-param>  
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>kaptcha</servlet-name> 
 		<url-pattern>/kaptcha</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 </web-app>
  

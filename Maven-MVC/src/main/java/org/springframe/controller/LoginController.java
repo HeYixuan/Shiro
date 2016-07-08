@@ -18,16 +18,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframe.constant.GlobalConstant;
 import org.springframe.utils.ImageUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +52,10 @@ public class LoginController {
 
 	@RequestMapping(value="/login.html",method=RequestMethod.GET)
 	public String login() {
+		Subject currentUser = SecurityUtils.getSubject();
+		if( currentUser.isAuthenticated() || currentUser.isRemembered() ){
+			return "redirect:/test";
+		} 
 		return "Login";
 	}
 
@@ -83,13 +92,25 @@ public class LoginController {
 		ImageIO.write(image, "png", os);
 
 	}
+	
+	/**
+	 * 登录失败
+	 * @param userName
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="doLogin",method = RequestMethod.POST)
+	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String username, Model model) {
+		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, username);
+		return "Login";
+	}
 
-	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
 	public String login(@RequestParam String username, String password, HttpServletRequest request) {
 		// 获取HttpSession中的验证码
-		String imageCode = (String) request.getSession().getAttribute("captcha");
+		String imageCode = (String) request.getSession().getAttribute(GlobalConstant.KEY_CAPTCHA);
 		// 获取用户请求表单中输入的验证码
-		String submitCode = WebUtils.getCleanParam(request, "captcha");
+		String submitCode = WebUtils.getCleanParam(request, GlobalConstant.KEY_CAPTCHA);
 		System.out.println("用户[" + username + "]登录时输入的验证码为[" + submitCode + "],HttpSession中的验证码为[" + imageCode + "]");
 		if (StringUtils.isEmpty(submitCode) || !StringUtils.equalsIgnoreCase(imageCode, submitCode)) {
 			request.setAttribute("message_login", "验证码不正确");
@@ -117,17 +138,18 @@ public class LoginController {
 			}
 		} catch (UnknownAccountException uae) {
 			logger.error("对用户[" + username + "]进行登录验证..验证未通过,未知账户");
-			request.setAttribute("message_login", "未知账户");
-		} catch (IncorrectCredentialsException ice) {
+		} catch (ExpiredCredentialsException ece) {  
+	        logger.error("对用户[" + username + "]进行登录验证..验证未通过,帐号已过期");
+	    } catch (IncorrectCredentialsException ice) {
 			logger.error("对用户[" + username + "]进行登录验证..验证未通过,错误的凭证");
-			request.setAttribute("message_login", "密码不正确");
-		} catch (LockedAccountException lae) {
+		} catch (UnauthorizedException ue) {  
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,没有相应的授权");
+	    } catch (LockedAccountException lae) {
 			logger.error("对用户[" + username + "]进行登录验证..验证未通过,账户已锁定");
-			request.setAttribute("message_login", "账户已锁定");
-		} catch (ExcessiveAttemptsException eae) {
-			System.out.println("对用户[" + username + "]进行登录验证..验证未通过,错误次数过多");
+		} catch (DisabledAccountException dae) {  
+	        logger.error("对用户[" + username + "]进行登录验证..验证未通过,帐号已被禁用");
+	    } catch (ExcessiveAttemptsException eae) {
 			logger.error("对用户[" + username + "]进行登录验证..验证未通过,错误次数过多");
-			request.setAttribute("message_login", "用户名或密码错误次数过多");
 		} catch (AuthenticationException ae) {
 			// 通过处理Shiro的运行时AuthenticationException就可以控制用户登录失败或密码错误时的情景
 			System.out.println("对用户[" + username + "]进行登录验证..验证未通过,堆栈轨迹如下");
@@ -136,7 +158,7 @@ public class LoginController {
 			request.setAttribute("message_login", "用户名或密码不正确");
 		}
 		return resultPageURL;
-	}
+	}*/
 	
 	
 	@RequestMapping("/logout")
@@ -144,7 +166,7 @@ public class LoginController {
 		logger.info("-------------注销---------------");
 		//清除session中的验证码
 		HttpSession session = (HttpSession) request.getSession();
-		session.removeAttribute("imageCode");
+		session.removeAttribute(GlobalConstant.KEY_CAPTCHA);
 		SecurityUtils.getSubject().logout();
 		return "redirect:login.html";
 	}
