@@ -12,23 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.ExcessiveAttemptsException;
-import org.apache.shiro.authc.ExpiredCredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.apache.shiro.web.util.WebUtils;
 import org.springframe.constant.GlobalConstant;
 import org.springframe.utils.ImageUtils;
 import org.springframework.stereotype.Controller;
@@ -36,7 +23,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
  * @author 340819
@@ -48,7 +34,7 @@ public class LoginController {
 
 	private static final Logger logger = Logger.getLogger(LoginController.class);
 
-	private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "login.html";
+	//private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "login.html";
 
 	@RequestMapping(value="/login.html",method=RequestMethod.GET)
 	public String login() {
@@ -56,6 +42,13 @@ public class LoginController {
 		if( currentUser.isAuthenticated() || currentUser.isRemembered() ){
 			return "redirect:/test";
 		} 
+		return "Login";
+	}
+	
+	
+	@RequestMapping(value="/doLogin",method = RequestMethod.POST)
+	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String username, Model model) {
+		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, username);
 		return "Login";
 	}
 
@@ -82,7 +75,8 @@ public class LoginController {
 		// 利用图片工具生成图片
 		// 第一个参数是生成的验证码，第二个参数是生成的图片
 		Object[] objs = ImageUtils.createImage();
-		// 将验证码存入Session
+		// 先移除session 再将验证码存入Session
+		session.removeAttribute(GlobalConstant.KEY_CAPTCHA);
 		session.setAttribute(GlobalConstant.KEY_CAPTCHA, objs[0]);
 		System.err.println("验证码为:"+objs[0]);
 		// 将图片输出给浏览器
@@ -93,18 +87,7 @@ public class LoginController {
 
 	}
 	
-	/**
-	 * 登录失败
-	 * @param userName
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value="doLogin",method = RequestMethod.POST)
-	public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String username, Model model) {
-		model.addAttribute(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM, username);
-		return "Login";
-	}
-
+	
 /*	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
 	public String login(@RequestParam String username, String password, HttpServletRequest request) {
 		// 获取HttpSession中的验证码

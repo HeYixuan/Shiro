@@ -45,6 +45,7 @@
 					<div class="col-xs-4  ">
 						<div class="input-group">
 							<!-- <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span> -->
+							<input id="rememberMe" name="rememberMe" type="hidden"/>
 							<input type="text" id="captcha" name="captcha" class="form-control" maxlength="4" placeholder="验证码" />
 							<img style="height: 35px; width: 100px;" id="code_img" src="${ctx}/kaptcha" title="点击刷新图片" />
 						</div>

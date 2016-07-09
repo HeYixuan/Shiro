@@ -2,16 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-4.2.xsd
 	 http://www.springframework.org/schema/tx 
   	http://www.springframework.org/schema/tx/spring-tx-4.2.xsd 
+  	 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	
-
  	<!-- 开启事务自动提交，回滚 -->
 	<!-- 以 @Transactional 标注来定义事务 -->
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
@@ -46,4 +47,16 @@
 		<property name="maxInMemorySize" value="40960" />
 	</bean>
 	
+	
+	<!-- Shiro的注解配置一定要放在spring-mvc中 -->
+	<!-- 开启shiro注解 -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
 </beans>

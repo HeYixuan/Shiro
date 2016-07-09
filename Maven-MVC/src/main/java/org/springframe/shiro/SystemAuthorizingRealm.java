@@ -31,21 +31,24 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	private static final Logger logger = Logger.getLogger(SystemAuthorizingRealm.class);
 
 	@Autowired
-	private SystemUserService systemUserService;
+	private SystemUserService systemUserDao;
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		String username = (String) principals.fromRealm(getName()).iterator().next();
-		SystemUser systemUser = systemUserService.loadByUsername(username);
+		SystemUser systemUser = systemUserDao.loadByUsername(username);
 		if (systemUser != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			info.setRoles(systemUser.getRoleName());
 			//用户的角色对应的所有权限，如果只使用角色定义访问权限
             Collection<SystemRole> roles = systemUser.getRoles();
-            for (SystemRole role : roles) {
-            	info.setStringPermissions(role.getPermissionsName());
+            if (!roles.isEmpty()) {
+            	for (SystemRole role : roles) {
+                	info.setStringPermissions(role.getPermissionsName());
+    			}
+            	return info;
 			}
-            return info;
+            
 		}
 		
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
@@ -66,7 +69,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		
 		logger.info("验证当前Subject时获取到token为:"+ReflectionToStringBuilder.toString(token, ToStringStyle.MULTI_LINE_STYLE));
 		if (token.getUsername() != null && !"".equals(token.getUsername())) {
-			SystemUser account = systemUserService.loadByUsername(token.getUsername());
+			SystemUser account = systemUserDao.loadByUsername(token.getUsername());
 			if (account != null) {
 	            this.setSession("currentUser", account);  
 				return new SimpleAuthenticationInfo(account.getUsername(), account.getPassword(), this.getName());

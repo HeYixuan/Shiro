@@ -3,79 +3,147 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
-	<!-- 对应于web.xml中配置的那个shiroFilter -->
+	<description>Shiro安全配置</description>
+	
+	<!-- 缓存管理 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
+	
+	<!-- 凭证匹配器  数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
+	<bean id="credentialsMatcher"
+		class="org.apache.shiro.authc.credential.Sha512CredentialsMatcher"></bean>
+	
+	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的SystemAuthorizingRealm.java -->
+	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm">
+		<!-- <property name="systemUserService" ref="systemUserService"></property> -->
+	</bean>
+	
+	<!-- 会话ID生成器 -->
+	<bean id="sessionIdGenerator"
+		class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+	<!-- 会话Cookie模板 -->
+	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="sid" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="864000" /><!-- 有效期10天 -->
+	</bean>
+
+	<!-- 持久cookie设置 -->
+	<bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="rememberMe" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="2592000" /><!-- 30天 -->
+	</bean>
+	
+	<!-- rememberMe管理器 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位） -->
+		<property name="cipherKey"
+			value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
+		<property name="cookie" ref="rememberMeCookie" />
+	</bean>
+	
+	<!-- 会话DAO -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
+        <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
+        <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
+    </bean>
+    
+    <!-- 会话验证调度器-->
+    <!-- <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+        <property name="sessionValidationInterval" value="1800000"/>
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean> -->
+    
+    <!-- 会话管理器-->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <property name="globalSessionTimeout" value="1800000"/>
+        <property name="deleteInvalidSessions" value="true"/>
+        <!-- <property name="sessionValidationSchedulerEnabled" value="true"/>
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/> -->
+        <property name="sessionDAO" ref="sessionDAO"/>
+        <property name="sessionIdCookieEnabled" value="true"/>
+        <property name="sessionIdCookie" ref="sessionIdCookie"/>
+    </bean>
+		
+	<!-- Shiro安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="realm"></property>
+		<property name="cacheManager" ref="cacheManager"></property>
+		<property name="rememberMeManager" ref="rememberMeManager"/>
+	</bean>
+	
+	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+    <!-- <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod" value="org.apache.shiro.SecurityUtils.setSecurityManager"/>
+        <property name="arguments" ref="securityManager"/>
+    </bean> -->
+	
+	<!-- 自定义验证拦截器 -->
+	<bean id="myAuthenFilter" class="org.springframe.shiro.CaptchaFormAuthenticationFilter">
+		<property name="usernameParam" value="username" />
+		<property name="passwordParam" value="password" />
+		<property name="rememberMeParam" value="rememberMe" />
+	</bean>
+	
+	
+	
+	
+	<!-- Shiro的Web过滤器 ,id要与web.xml一致 -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<!-- Shiro的核心安全接口，这个属性是必须的 -->
 		<property name="securityManager" ref="securityManager" />
 		<!-- 要求登录时的链接(登录页面地址)，非必须的属性，默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
-		<property name="loginUrl" value="/login.html" />
+		<property name="loginUrl" value="/doLogin" />
 		<!-- 登录成功后要跳转的连接(本例中此属性用不到，因为登录成功后的处理逻辑在LoginController里硬编码) -->
 		<property name="successUrl" value="/" />
 		<!-- 用户访问未对其授权的资源时，所显示的连接 -->
 		<property name="unauthorizedUrl" value="/403" />
 		<property name="filters">
-		    <map>
-		        <entry key="authc" value-ref="myAuthenFilter"/>
-		    </map>
+			<map>
+				<entry key="authc" value-ref="myAuthenFilter" />
+			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
 				<!-- anon 开放不拦截 -->
 				/kaptcha = anon
-				/resources/*=anon
+				/resources/** = anon
+				/login.html = anon
+				/doLogin = authc
+				/in/find = anon
+				/**=authc
 				/admin/**=authc
 				<!-- 输入/ 需要鉴权 -->
 				/ = user
 				/logout = logout
-				<!-- roles[manager]表示访问此连接需要用户的角色为manager -->  
-                /user/add=roles[manager]  
-                /user/del/**=roles[admin]  
-                /user/edit/**=roles[manager]
+				<!-- roles[manager]表示访问此连接需要用户的角色为manager -->
+				/user/add=roles[manager]
+				/user/del/**=roles[admin]
+				/user/edit/**=roles[manager]
 			</value>
 		</property>
 
 	</bean>
-	
-	<!-- 自定义验证拦截器 -->  
-    <bean id="myAuthenFilter" class="org.springframe.shiro.CaptchaFormAuthenticationFilter" /> 
-    
+
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
-	<!-- 数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
-	<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.Sha512CredentialsMatcher"></bean>
-	<!-- 缓存管理 -->
-	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
-	
-	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的ShiroDbRealm.java -->
-	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm" />
 	
 	<!-- 使用Shiro自带的JdbcRealm类 指定密码匹配所需要用到的加密对象 指定存储用户、角色、权限许可的数据源及相关查询语句 -->
-	<!-- <bean id="jdbcRealm" class="org.apache.shiro.realm.jdbc.JdbcRealm">
-		<property name="credentialsMatcher" ref="credentialsMatcher"></property>
-		<property name="permissionsLookupEnabled" value="true"></property>
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="authenticationQuery" value="SELECT password FROM system_user WHERE user_name = ?"></property>
-		<property name="userRolesQuery" value="SELECT role_name from system_user_role left join system_role using(system_role_id) left join system_user using(system_user_id) WHERE user_name = ?"></property>
-		<property name="permissionsQuery" value="SELECT permission_name FROM system_role_permission left join system_role using(system_role_id) left join system_permission using(permission_id) WHERE role_name = ?"></property>
-	</bean> -->
-
-	<!-- Shiro安全管理器 -->
-	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="realm"></property>
-		<property name="cacheManager" ref="cacheManager"></property>
-	</bean>
-	
-	<!-- Shiro的注解配置一定要放在spring-mvc中 -->
-		<!-- 开启shiro注解-->
-    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
-          depends-on="lifecycleBeanPostProcessor">
-        <property name="proxyTargetClass" value="true" />
-    </bean>
-
-    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
-        <property name="securityManager" ref="securityManager"/>
-    </bean>
+	<!-- <bean id="jdbcRealm" class="org.apache.shiro.realm.jdbc.JdbcRealm"> 
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property> 
+		<property name="permissionsLookupEnabled" value="true"></property> <property 
+		name="dataSource" ref="dataSource"></property> <property name="authenticationQuery" 
+		value="SELECT password FROM system_user WHERE user_name = ?"></property> 
+		<property name="userRolesQuery" value="SELECT role_name from system_user_role 
+		left join system_role using(system_role_id) left join system_user using(system_user_id) 
+		WHERE user_name = ?"></property> <property name="permissionsQuery" value="SELECT 
+		permission_name FROM system_role_permission left join system_role using(system_role_id) 
+		left join system_permission using(permission_id) WHERE role_name = ?"></property> 
+		</bean> -->
 
 </beans>

@@ -24,4 +24,10 @@ public class TestContrller {
 		systemUserService.save(systemUser);
 		return "redirect:/login.html";
 	}
+	
+	@RequestMapping("/find")
+	public void find(){
+		SystemUser user = systemUserService.loadByUsername("HeYixuan");
+		System.out.println("user对象:"+user.getId());
+	}
 }
