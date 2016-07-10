@@ -72,6 +72,28 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<!-- 事务管理 通知 -->
+    <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            对insert,update,delete 开头的方法进行事务管理,只要有异常就回滚
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
+            select,count开头的方法,开启只读,提高数据库访问性能
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="load*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="count*" read-only="true"/>
+            对其他方法 使用默认的事务管理
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice> -->
+    <!-- 事务 aop 配置 -->
+    <!-- <aop:config>
+        <aop:pointcut id="serviceMethods" expression="execution(* org.springframe.service..*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+    </aop:config> -->
 
 	<!-- 5. 配置事务异常封装 -->
 	<bean id="persistenceExceptionTranslationPostProcessor"

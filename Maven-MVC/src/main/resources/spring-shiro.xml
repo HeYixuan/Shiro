@@ -17,9 +17,7 @@
 		class="org.apache.shiro.authc.credential.Sha512CredentialsMatcher"></bean>
 	
 	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的SystemAuthorizingRealm.java -->
-	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm">
-		<!-- <property name="systemUserService" ref="systemUserService"></property> -->
-	</bean>
+	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm" />
 	
 	<!-- 会话ID生成器 -->
 	<bean id="sessionIdGenerator"
@@ -100,7 +98,7 @@
 		<!-- 要求登录时的链接(登录页面地址)，非必须的属性，默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
 		<property name="loginUrl" value="/doLogin" />
 		<!-- 登录成功后要跳转的连接(本例中此属性用不到，因为登录成功后的处理逻辑在LoginController里硬编码) -->
-		<property name="successUrl" value="/" />
+		<property name="successUrl" value="/test" />
 		<!-- 用户访问未对其授权的资源时，所显示的连接 -->
 		<property name="unauthorizedUrl" value="/403" />
 		<property name="filters">
@@ -133,6 +131,15 @@
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"></bean>
 	
+	<!-- Shiro的注解配置一定要放在spring-mvc中 -->
+	<!-- 开启shiro注解 -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
 	<!-- 使用Shiro自带的JdbcRealm类 指定密码匹配所需要用到的加密对象 指定存储用户、角色、权限许可的数据源及相关查询语句 -->
 	<!-- <bean id="jdbcRealm" class="org.apache.shiro.realm.jdbc.JdbcRealm"> 
 		<property name="credentialsMatcher" ref="credentialsMatcher"></property> 
