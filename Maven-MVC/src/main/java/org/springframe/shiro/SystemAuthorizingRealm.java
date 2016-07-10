@@ -26,17 +26,22 @@ import org.springframe.model.system.SystemUser;
 import org.springframe.service.system.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * 自定义realm类
+ * @author Administrator
+ *
+ */
 public class SystemAuthorizingRealm extends AuthorizingRealm {
 	
 	private static final Logger logger = Logger.getLogger(SystemAuthorizingRealm.class);
 
 	@Autowired
-	private SystemUserService systemUserDao;
+	private SystemUserService systemUserService;
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		String username = (String) principals.fromRealm(getName()).iterator().next();
-		SystemUser systemUser = systemUserDao.loadByUsername(username);
+		SystemUser systemUser = systemUserService.loadByUsername(username);
 		if (systemUser != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 			info.setRoles(systemUser.getRoleName());
@@ -69,7 +74,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		
 		logger.info("验证当前Subject时获取到token为:"+ReflectionToStringBuilder.toString(token, ToStringStyle.MULTI_LINE_STYLE));
 		if (token.getUsername() != null && !"".equals(token.getUsername())) {
-			SystemUser account = systemUserDao.loadByUsername(token.getUsername());
+			SystemUser account = systemUserService.loadByUsername(token.getUsername());
 			if (account != null) {
 	            this.setSession("currentUser", account);  
 				return new SimpleAuthenticationInfo(account.getUsername(), account.getPassword(), this.getName());
