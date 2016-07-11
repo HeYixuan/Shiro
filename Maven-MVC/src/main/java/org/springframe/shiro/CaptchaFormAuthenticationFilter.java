@@ -6,6 +6,13 @@ import javax.servlet.ServletResponse;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -58,7 +65,6 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
 	 * @param token
 	 */
 	protected void doCaptchaValidate(CaptchaUsernamePasswordToken token) {
-//		Constants.KAPTCHA_SESSION_KEY
 		String captcha = (String) SecurityUtils.getSubject().getSession().getAttribute(GlobalConstant.KEY_CAPTCHA);
 
 		if (captcha != null && !captcha.equalsIgnoreCase(token.getCaptcha())) {
@@ -79,8 +85,30 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
 			logger.info("对用户[" + username + "]进行登录验证..验证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
 			return onLoginSuccess(token, currentUser, request, response);
 			
+		} catch (UnknownAccountException uae) {
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,未知账户");
+			return onLoginFailure(token, uae, request, response);
+		} catch (UnauthorizedException ue) {
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,没有相应的授权");
+			return onAccessDenied(request, response);
+		} catch (ExpiredCredentialsException ece) {  
+	        logger.error("对用户[" + username + "]进行登录验证..验证未通过,帐号已过期");
+	        return onLoginFailure(token, ece, request, response);
+	    } catch (IncorrectCredentialsException ice) {
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,错误的凭证");
+			return onLoginFailure(token, ice, request, response);
+		} catch (LockedAccountException lae) {
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,账户已锁定");
+			return onLoginFailure(token, lae, request, response);
+		} catch (DisabledAccountException dae) {  
+	        logger.error("对用户[" + username + "]进行登录验证..验证未通过,帐号已被禁用");
+	        return onLoginFailure(token, dae, request, response);
+	    } catch (ExcessiveAttemptsException eae) {
+			logger.error("对用户[" + username + "]进行登录验证..验证未通过,错误次数过多");
+			return onLoginFailure(token, eae, request, response);
 		} catch (AuthenticationException ae) {
-			logger.info("对用户[" + username + "]进行登录验证..验证失败..尝试重新登录");
+			logger.info("对用户[" + username + "]进行登录验证..验证失败..尝试重新登录,堆栈轨迹如下",ae);
+			ae.printStackTrace();
 			return onLoginFailure(token, ae, request, response);
 		}
 		
