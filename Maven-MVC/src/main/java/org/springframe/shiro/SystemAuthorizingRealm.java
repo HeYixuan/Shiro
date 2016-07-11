@@ -2,7 +2,8 @@ package org.springframe.shiro;
 
 import java.util.Collection;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.log4j.Logger;
@@ -11,7 +12,6 @@ import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * 自定义realm类
  * 
- * @author Administrator
+ * @author HeYixuan
  *
  */
 public class SystemAuthorizingRealm extends AuthorizingRealm {
@@ -65,6 +65,11 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		System.out.println("开始授权");
 		return info;
 	}
+	
+	@PostConstruct
+	private void initCredentialsMatcher() {
+		setCredentialsMatcher(new PasswordCredentialsMatcher());  
+	}
 
 	/**
 	 * 认证回调函数, 登录时调用.
@@ -82,13 +87,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			SystemUser account = systemUserService.loadByUsername(token.getUsername());
 
 			if (account != null) {
-				if (StringUtils.isNotBlank(account.getPassword()) && account.getPassword().equals(token.getPassword())) {
-					this.setSession("currentUser", account);
-					return new SimpleAuthenticationInfo(account.getUsername(), account.getPassword(), this.getName());
-				}else{
-					throw new IncorrectCredentialsException();
-				}
-				
+				this.setSession("currentUser", account);
+				//这里不能去判断密码了,如果判断密码了就不能进去我的PasswordCredentialsMatcher类去比较密码了
+				return new SimpleAuthenticationInfo(account.getUsername(), account.getPassword(), this.getName());
 			} else {
 				throw new UnknownAccountException("No account found for user [" + token.getUsername() + "]");
 			}

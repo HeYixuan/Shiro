@@ -13,11 +13,12 @@
 	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
 	
 	<!-- 凭证匹配器  数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
-	<bean id="credentialsMatcher"
-		class="org.apache.shiro.authc.credential.Sha512CredentialsMatcher"></bean>
+	<bean id="credentialsMatcher" class="org.springframe.shiro.PasswordCredentialsMatcher"></bean>
 	
 	<!-- 继承自AuthorizingRealm的自定义Realm,即指定Shiro验证用户登录的类为自定义的SystemAuthorizingRealm.java -->
-	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm" />
+	<bean id="realm" class="org.springframe.shiro.SystemAuthorizingRealm">
+		<property name="credentialsMatcher" ref="credentialsMatcher"></property> 
+	</bean>
 	
 	<!-- 会话ID生成器 -->
 	<bean id="sessionIdGenerator"

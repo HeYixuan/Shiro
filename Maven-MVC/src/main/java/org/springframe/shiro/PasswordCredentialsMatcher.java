@@ -2,6 +2,7 @@ package org.springframe.shiro;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 import org.springframe.utils.MD5Utils;
 
@@ -14,12 +15,11 @@ public class PasswordCredentialsMatcher extends SimpleCredentialsMatcher {
 	
 	@Override
 	public boolean doCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info) {
-		/*UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
+		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		Object tokenCredentials = encrypt(String.valueOf(token.getPassword()));  
-        Object accountCredentials = getCredentials(info);*/
+        Object accountCredentials = getCredentials(info);
         //将密码加密与系统加密后的密码校验，内容一致就返回true,不一致就返回false 
-		
-		return super.doCredentialsMatch(authcToken, info);
+		return equals(tokenCredentials, accountCredentials);
 	}
 	
 	/**
@@ -27,8 +27,9 @@ public class PasswordCredentialsMatcher extends SimpleCredentialsMatcher {
 	 * @param data
 	 * @return
 	 */
-    protected String Encry(String data) {  
-        String salts = MD5Utils.encrypt(data);//这里可以选择自己的密码验证方式 比如 md5或者sha256等  
-        return salts;  
+    protected String encrypt(String data) {  
+        String sha = MD5Utils.SHA512(data);//这里可以选择自己的密码验证方式 比如 md5或者sha256等  
+        return sha;  
     }
+
 }
