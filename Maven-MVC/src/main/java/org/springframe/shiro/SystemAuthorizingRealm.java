@@ -47,10 +47,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		SystemUser systemUser = systemUserService.loadByUsername(username);
 		if (systemUser != null) {
 			SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-			info.setRoles(systemUser.getRoleName());
 			// 用户的角色对应的所有权限，如果只使用角色定义访问权限
 			Collection<SystemRole> roles = systemUser.getRoles();
 			if (!roles.isEmpty()) {
+				info.setRoles(systemUser.getRoleName());
 				for (SystemRole role : roles) {
 					info.setStringPermissions(role.getPermissionsName());
 				}
@@ -58,12 +58,7 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			}
 
 		}
-
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		info.addStringPermission("sys:manager");
-		info.addStringPermission("user");
-		System.out.println("开始授权");
-		return info;
+		return null;
 	}
 	
 	@PostConstruct
