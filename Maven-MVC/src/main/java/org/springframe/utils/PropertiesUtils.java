@@ -50,6 +50,27 @@ public class PropertiesUtils {
         }
 		return null;  
 	}
+	
+	
+	/**
+	 * 读取配置文件
+	 * @param propertiesName 文件名
+	 * @param keyName 键
+	 * @return
+	 */
+	public static Integer readPropertiesIntVal(String propertiesName,String keyName){  
+		props = new Properties();   
+		try {  
+            props=PropertiesLoaderUtils.loadAllProperties(propertiesName);
+            final String value = props.getProperty(keyName).trim();
+            logger.info(keyName+"的值为: "+value);
+            return Integer.parseInt(value);
+        } catch (IOException e) {  
+            System.out.println(e.getMessage());
+            logger.error("--------读取配置文件失败--------", e);
+        }
+		return null;  
+	}
 	 
 	public static void main(String[] args) {
 		//PropertiesUtils p = new PropertiesUtils();

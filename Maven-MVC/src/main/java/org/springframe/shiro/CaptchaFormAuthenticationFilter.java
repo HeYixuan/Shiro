@@ -26,7 +26,7 @@ import org.springframe.constant.GlobalConstant;
  */
 public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
 
-	private static final Logger logger = Logger.getLogger(SystemAuthorizingRealm.class);
+	private static final Logger logger = Logger.getLogger(CaptchaFormAuthenticationFilter.class);
 
 	public static final String DEFAULT_CAPTCHA_PARAM = "captcha";
 
