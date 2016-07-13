@@ -44,9 +44,9 @@ public class RedisUtil {
 	private static void initialPool() {
 		try {
 			JedisPoolConfig config = new JedisPoolConfig();
-			config.setMaxTotal(20);
+			config.setMaxActive(20);;
 			config.setMaxIdle(5);
-			config.setMaxWaitMillis(10001);
+			config.setMaxWait(10001);
 			config.setTestOnBorrow(true);
 			jedisPool = new JedisPool(config, SERVER, PORT);
 	        
@@ -58,7 +58,7 @@ public class RedisUtil {
 	/**
 	 * 在多线程环境同步初始化
 	 */
-	private static void poolInit() {
+	private static synchronized void poolInit() {
 		if (jedisPool == null) {
 			initialPool();
 		}
@@ -69,7 +69,7 @@ public class RedisUtil {
 	 * 
 	 * @return Jedis
 	 */
-	public static Jedis getJedis() {
+	public static synchronized Jedis getJedis() {
 		if (jedisPool == null) {
 			poolInit();
 		}
@@ -94,8 +94,7 @@ public class RedisUtil {
 	public static void returnResource(final Jedis jedis) {
 
 		if (jedis != null && jedisPool != null) {
-			jedis.close();
-			jedisPool.close();
+			jedisPool.returnResource(jedis);;
 		} else {
 			logger.error("jedisPool close error!");
 		}
@@ -147,8 +146,10 @@ public class RedisUtil {
 	}
 	
 	public static void main(String[] args) {
-        RedisUtils.setString("login", "1231213");
-        System.out.println("========================================");
-        System.out.println(RedisUtils.getString("login"));
+//        RedisUtils.setString("login", "1231213");
+//        System.out.println("========================================");
+//        System.out.println(RedisUtils.getString("login"));
+		RedisUtil.setString("login", "123");
+		System.out.println(RedisUtil.getString("login"));
     }
 }
