@@ -6,11 +6,7 @@
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Maven-MVC Maven Webapp</name>
-	<url>https://repository.sonatype.org/content/groups/forge/com/google/code/kaptcha/kaptcha/2.3/</url>
-	<repository>
-		<id>central</id>
-		<url>http://repo1.maven.org/maven2/</url>
-	</repository>
+	<url>http://repo1.maven.org/maven2/</url>
 	<!-- <url>http://maven.apache.org</url> -->
 	<dependencies>
 		<!-- http://mvnrepository.com/artifact/junit/junit -->
@@ -257,19 +253,10 @@
 		</dependency>
 
 		<!-- cas -->
-		<!-- <dependency> <groupId>org.apache.shiro</groupId> <artifactId>shiro-cas</artifactId> 
-			<version>1.2.5</version> </dependency> -->
-		<!-- Shiro 对 cas 集成 -->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-cas</artifactId>
 			<version>1.2.5</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.jasig.cas.client</groupId>
-					<artifactId>cas-client-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!-- cas 客户端 -->
 		<dependency>

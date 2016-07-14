@@ -36,7 +36,7 @@ public class LoginController {
 
 	//private static String resultPageURL = InternalResourceViewResolver.FORWARD_URL_PREFIX + "login.html";
 
-	@RequestMapping(value="/login.html",method=RequestMethod.GET)
+	@RequestMapping(value="/",method=RequestMethod.GET)
 	public String login() {
 		Subject currentUser = SecurityUtils.getSubject();
 		if( currentUser.isAuthenticated() || currentUser.isRemembered() ){

@@ -2,7 +2,6 @@ package org.springframe.controller;
 
 import org.springframe.model.system.SystemUser;
 import org.springframe.service.system.SystemUserService;
-import org.springframe.utils.JedisUtils;
 import org.springframe.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

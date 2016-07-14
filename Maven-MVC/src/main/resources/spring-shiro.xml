@@ -152,13 +152,11 @@
 				<!-- anon 开放不拦截 -->
 				/kaptcha = anon
 				/resources/** = anon
-				/login.html = anon
+				/ = anon
 				/doLogin = authc
 				/in/find = anon
 				/**=authc
 				/admin/**=authc
-				<!-- 输入/ 需要鉴权 -->
-				/ = user
 				/logout = logout
 				<!-- roles[manager]表示访问此连接需要用户的角色为manager -->
 				/user/add=roles[manager]
