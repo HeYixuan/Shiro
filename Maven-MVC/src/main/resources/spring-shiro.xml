@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
+	   http://www.springframework.org/schema/context 
+	   http://www.springframework.org/schema/context/spring-context-4.2.xsd
        http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
        http://www.springframework.org/schema/util
@@ -9,8 +12,12 @@
 
 	<description>Shiro安全配置</description>
 	
+	<!-- <bean id="systemUserSerive" class="org.springframe.service.impl.system.SystemUserServiceImpl"/> -->
+	
 	<!-- 缓存管理 -->
-	<bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>
+	</bean>
 	
 	<!-- 凭证匹配器  数据库保存的密码是使用MD5算法加密的，所以这里需要配置一个密码匹配对象 -->
 	<bean id="credentialsMatcher" class="org.springframe.shiro.PasswordCredentialsMatcher"></bean>
@@ -26,7 +33,7 @@
 
 	<!-- 会话Cookie模板 -->
 	<bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
-		<constructor-arg value="sid" />
+		<constructor-arg value="JSESSIONID"/>
 		<property name="httpOnly" value="true" />
 		<property name="maxAge" value="864000" /><!-- 有效期10天 -->
 	</bean>
@@ -71,9 +78,16 @@
 		
 	<!-- Shiro安全管理器 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<property name="realm" ref="realm"></property>
-		<property name="cacheManager" ref="cacheManager"></property>
+		<property name="realm" ref="realm" />
+		<!-- <property name="realms">
+			<list>
+				<ref bean="realm"/>
+				<ref bean="casRealm"/>
+			</list>
+		</property> -->
+		<property name="cacheManager" ref="cacheManager"/>
 		<property name="rememberMeManager" ref="rememberMeManager"/>
+		<!-- <property name="subjectFactory" ref="casSubjectFactory"/> -->
 	</bean>
 	
 	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
@@ -89,7 +103,27 @@
 		<property name="rememberMeParam" value="rememberMe" />
 	</bean>
 	
+	<!-- 单点工厂 -->
+	<!-- <bean id="casSubjectFactory" class="org.apache.shiro.cas.CasSubjectFactory"/> -->
 	
+    <!-- 自定义单点realm -->
+    <!-- <bean id="casRealm" class="org.springframe.shiro.MyCasRealm">
+   		 <property name="systemUserService" ref="systemUserService"/>
+    	<property name="cachingEnabled" value="true"/>
+    	<property name="authenticationCachingEnabled" value="true"/>
+    	<property name="authenticationCacheName" value="authenticationCache"/>
+    	<property name="authorizationCachingEnabled" value="true"/>
+    	<property name="authorizationCacheName" value="authorizationCache"/>
+    	该地址为cas server地址
+    	<property name="casServerUrlPrefix" value="${shiro.casServer.url}"/>
+    	该地址为是当前应用 CAS 服务 URL，即用于接收并处理登录成功后的 Ticket 的，
+    	必须和loginUrl中的service参数保持一致，否则服务器会判断service不匹配
+    	<property name="casService" value="${shiro.casClient.url}"/>
+	</bean> -->
+    
+    <bean id="casFilter" class="org.apache.shiro.cas.CasFilter">
+    	<property name="failureUrl" value="/view/erro/casFailure.jsp"/>
+	</bean>
 	
 	
 	<!-- Shiro的Web过滤器 ,id要与web.xml一致 -->
@@ -100,15 +134,21 @@
 		<property name="loginUrl" value="/doLogin" />
 		<!-- 登录成功后要跳转的连接(本例中此属性用不到，因为登录成功后的处理逻辑在LoginController里硬编码) -->
 		<property name="successUrl" value="/test" />
+		<!-- 单点 -->
+		<!-- <property name="loginUrl" value="${shiro.login.url}"/>
+    	<property name="successUrl" value="${shiro.login.success.url}"/> -->
 		<!-- 用户访问未对其授权的资源时，所显示的连接 -->
 		<property name="unauthorizedUrl" value="/403" />
 		<property name="filters">
 			<map>
+				<!-- <entry key="cas" value-ref="casFilter"/> -->
 				<entry key="authc" value-ref="myAuthenFilter" />
 			</map>
 		</property>
 		<property name="filterChainDefinitions">
 			<value>
+				<!-- /view/erro/casFailure.jsp = anon
+            	/cas = cas -->
 				<!-- anon 开放不拦截 -->
 				/kaptcha = anon
 				/resources/** = anon

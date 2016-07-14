@@ -7,6 +7,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Maven-MVC Maven Webapp</name>
 	<url>https://repository.sonatype.org/content/groups/forge/com/google/code/kaptcha/kaptcha/2.3/</url>
+	<repository>
+		<id>central</id>
+		<url>http://repo1.maven.org/maven2/</url>
+	</repository>
 	<!-- <url>http://maven.apache.org</url> -->
 	<dependencies>
 		<!-- http://mvnrepository.com/artifact/junit/junit -->
@@ -225,6 +229,18 @@
 			<version>1.6</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
 		<!-- commons-codec 加密 -->
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -301,6 +317,28 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>2.8.0</version>
 		</dependency>
+
+		<!-- 获取操作系统包 -->
+		<dependency>
+			<groupId>eu.bitwalker</groupId>
+			<artifactId>UserAgentUtils</artifactId>
+			<version>1.20</version>
+		</dependency>
+
+		<!-- activeMQ -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		
+		<!-- quartz -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
 
 	</dependencies>
 	<build>

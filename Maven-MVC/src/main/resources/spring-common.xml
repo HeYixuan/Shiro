@@ -20,10 +20,11 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd"> -->
 	<!-- 1.引入jdbc配置文件 -->
-	<context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true" />
-	<context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true" />
+	<context:property-placeholder location="classpath:*.properties" ignore-unresolvable="true" />
+	<!-- <context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true" /> -->
 	<!-- 导入数据库的相关配置 -->
 	<import resource="classpath:spring-shiro.xml" />
+	<import resource="classpath:spring-redis.xml" />
 
 	<!-- 2.配置数据源 -->
 	<!-- org.apache.commons.dbcp.BasicDataSource -->
@@ -74,28 +75,6 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<!-- 事务管理 通知 -->
-    <!-- <tx:advice id="txAdvice" transaction-manager="transactionManager">
-        <tx:attributes>
-            对insert,update,delete 开头的方法进行事务管理,只要有异常就回滚
-            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
-            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
-            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Throwable"/>
-            select,count开头的方法,开启只读,提高数据库访问性能
-            <tx:method name="select*" read-only="true"/>
-            <tx:method name="load*" read-only="true"/>
-            <tx:method name="find*" read-only="true"/>
-            <tx:method name="count*" read-only="true"/>
-            对其他方法 使用默认的事务管理
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice> -->
-    <!-- 事务 aop 配置 -->
-    <!-- <aop:config>
-        <aop:pointcut id="serviceMethods" expression="execution(* org.springframe.service..*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
-    </aop:config> -->
-
 	<!-- 5. 配置事务异常封装 -->
 	<bean id="persistenceExceptionTranslationPostProcessor"
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
