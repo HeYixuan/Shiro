@@ -109,6 +109,12 @@
 			<artifactId>spring-aspects</artifactId>
 			<version>4.2.6.RELEASE</version>
 		</dependency>
+		<!-- activeMQ与spring整合所需要的包 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>4.2.6.RELEASE</version>
+		</dependency>
 
 		<!-- spring-security -->
 		<dependency>
@@ -318,12 +324,29 @@
 			<artifactId>activemq-core</artifactId>
 			<version>5.7.0</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>xbean-spring</artifactId>
+			<version>4.5</version>
+		</dependency>
+
 		<!-- quartz -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>2.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<!-- poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.9</version>
 		</dependency>
 
 
