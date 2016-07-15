@@ -153,6 +153,9 @@
 				/kaptcha = anon
 				/resources/** = anon
 				/ = anon
+				/*.jsp = anon
+				/activemq/queueSender = anon
+				/activemq/topicSender = anon
 				/doLogin = authc
 				/in/find = anon
 				/**=authc

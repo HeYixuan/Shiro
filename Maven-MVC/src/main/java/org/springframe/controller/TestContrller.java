@@ -1,9 +1,13 @@
 package org.springframe.controller;
 
+import javax.jms.Destination;
+
+import org.springframe.jms.TemplateProducer;
 import org.springframe.model.system.SystemUser;
 import org.springframe.service.system.SystemUserService;
 import org.springframe.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,8 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TestContrller {
 	@Autowired
 	private SystemUserService systemUserService;
+	@Autowired  
+    @Qualifier("queueDestination")  
+    private Destination destination;  
+	
 	@Autowired
 	private RedisUtil redisUtil;
+	
+	@Autowired
+	private TemplateProducer producer;
 	
 	@RequestMapping("/save")
 	public String save(){
@@ -30,10 +41,11 @@ public class TestContrller {
 	
 	@RequestMapping("/find")
 	public void find(){
-		redisUtil.setString("SA", "3326");
+		//producer.sendMessage(destination, "买电影票");
+		//redisUtil.setString("SA", "3326");
 		System.err.println("--------------没有任何异常-------------");
 		System.err.println("key1:"+redisUtil.getString("SA"));
-		SystemUser user = systemUserService.loadByUsername("HeYixuan");
-		System.out.println("user对象:"+user.getId());
+		/*SystemUser user = systemUserService.loadByUsername("HeYixuan");
+		System.out.println("user对象:"+user.getId());*/
 	}
 }
