@@ -1,4 +1,4 @@
-package org.springframe.service.system;
+package org.springframe.system.service;
 
 import java.io.Serializable;
 

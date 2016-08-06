@@ -13,6 +13,8 @@
 	http://www.springframework.org/schema/mvc
 	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	
+	<!-- 定义CGLIBD代理切入 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" /> 
  	<!-- 开启事务自动提交，回滚 -->
 	<!-- 以 @Transactional 标注来定义事务 -->
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />

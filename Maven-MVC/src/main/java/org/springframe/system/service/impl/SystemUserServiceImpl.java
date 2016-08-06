@@ -1,10 +1,10 @@
-package org.springframe.service.impl.system;
+package org.springframe.system.service.impl;
 
 import java.io.Serializable;
 
 import org.springframe.dao.system.SystemUserDao;
 import org.springframe.model.system.SystemUser;
-import org.springframe.service.system.SystemUserService;
+import org.springframe.system.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

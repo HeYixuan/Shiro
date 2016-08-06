@@ -36,8 +36,6 @@ public class HomeController {
 	public String index2(){
 		
 		Users u = new Users();
-		u.setFirstName("何");
-		u.setLastName("壹轩");
 		u.setUsername("何壹轩何");
 		u.setPassword("123456");
 		u.setEmail("15517551511@126.com");
@@ -47,8 +45,6 @@ public class HomeController {
 		
 		
 		Users user = new Users();
-		user.setFirstName("何1");
-		user.setLastName("壹轩1");
 		user.setUsername("何壹轩");
 		user.setPassword("123456");
 		user.setEmail("15517551511@126.com");

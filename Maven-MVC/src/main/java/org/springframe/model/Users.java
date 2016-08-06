@@ -1,5 +1,7 @@
 package org.springframe.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,20 +19,6 @@ public class Users extends Base {
 	 */
 	private static final long serialVersionUID = -7206952154451015017L;
 	
-	private Long sid;
-	
-	/*@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	public Long getSid() {
-		return sid;
-	}
-	public void setSid(Long sid) {
-		this.sid = sid;
-	}*/
-
-	private String firstName;
-
-	private String lastName;
 	/**
 	 * 用户名
 	 */
@@ -47,21 +35,6 @@ public class Users extends Base {
 	 * 是否激活
 	 */
 	private int isEnabled;
-	
-	@Column(name = "FirstName", columnDefinition = "varchar(36)")
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	@Column(name = "LastName", columnDefinition = "varchar(36)")
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 	
 	@Column(name = "UserName", columnDefinition = "varchar(36)")
 	public String getUsername() {
@@ -85,7 +58,7 @@ public class Users extends Base {
 		this.email = email;
 	}
 	
-	@Column(name = "isEnabled", columnDefinition = "int(1)")
+	@Column(name = "isEnable", columnDefinition = "int(1)")
 	public int isEnabled() {
 		return isEnabled;
 	}
@@ -97,9 +70,8 @@ public class Users extends Base {
 	public Users() {
 		super();
 	}
-	
-	public Users(String id, String username, String password, String email, int isEnabled) {
-		super(id);
+	public Users(String username, String password, String email, int isEnabled) {
+		super();
 		this.username = username;
 		this.password = password;
 		this.email = email;

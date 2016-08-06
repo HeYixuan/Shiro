@@ -2,9 +2,11 @@ package org.springframe.system.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import eu.bitwalker.useragentutils.UserAgent;
 
 
@@ -13,19 +15,16 @@ public class LogInterceptor implements HandlerInterceptor {
 	
 	private Long beginTime;// 1、开始时间
 	private Long endTime;// 2、结束时间
-	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		beginTime = System.currentTimeMillis();//计时
 		return true;
 	}
 
-	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
 	}
 
-	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		

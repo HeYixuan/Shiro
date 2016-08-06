@@ -4,7 +4,7 @@ import javax.jms.Destination;
 
 import org.springframe.jms.TemplateProducer;
 import org.springframe.model.system.SystemUser;
-import org.springframe.service.system.SystemUserService;
+import org.springframe.system.service.SystemUserService;
 import org.springframe.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

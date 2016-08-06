@@ -25,7 +25,7 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframe.model.system.SystemRole;
 import org.springframe.model.system.SystemUser;
-import org.springframe.service.system.SystemUserService;
+import org.springframe.system.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

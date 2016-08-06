@@ -10,7 +10,7 @@ import org.apache.shiro.cas.CasRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframe.model.system.SystemRole;
 import org.springframe.model.system.SystemUser;
-import org.springframe.service.system.SystemUserService;
+import org.springframe.system.service.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

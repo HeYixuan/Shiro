@@ -1,10 +1,10 @@
-package org.springframe.service.impl.system;
+package org.springframe.system.service.impl;
 
 import java.io.Serializable;
 
 import org.springframe.dao.system.SystemRoleDao;
 import org.springframe.model.system.SystemRole;
-import org.springframe.service.system.SystemRoleService;
+import org.springframe.system.service.SystemRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
